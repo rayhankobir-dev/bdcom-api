@@ -5,16 +5,14 @@ import KeyService from "./key.service.js";
 import redis from "../../cache/index.js";
 
 const cacheUser = async (userId, user) => {
-  await redis.set(`user:${userId}`, JSON.stringify(user), "EX", 3600); // Cache for 1 hour
+  await redis.set(`user:${userId}`, JSON.stringify(user), "EX", 600);
 };
 
-// Helper function to get cached user data
 const getCachedUser = async (userId) => {
   const cachedUser = await redis.get(`user:${userId}`);
   return cachedUser ? JSON.parse(cachedUser) : null;
 };
 
-// Helper function to invalidate user cache
 const invalidateCache = async (userId) => {
   await redis.del(`user:${userId}`);
 };

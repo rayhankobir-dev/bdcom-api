@@ -5,8 +5,7 @@ import logout from "./auth/logout.js";
 import token from "./auth/token.js";
 import credential from "./auth/credential.js";
 import profile from "./profile/index.js";
-import news from "./news/index.js";
-// import newses from "./newses/index.js";
+import newses from "./newses/index.js";
 
 const router = new Router();
 
@@ -16,8 +15,7 @@ router.use("/logout", logout);
 router.use("/token", token);
 router.use("/credential", credential);
 router.use("/profile", profile);
-router.use("/news", news);
-// router.use("/newses", newses);
+router.use("/newses", newses);
 
 /**
  * @swagger

@@ -1,23 +1,43 @@
+import mongoose, { Types, Schema } from "mongoose";
 import { NewsModel } from "../models/news.model.js";
+import redis from "../../cache/index.js";
 
 const AUTHOR_DETAIL = "name email";
 
+const cacheNews = async (newsId, news) => {
+  await redis.set(`news:${newsId}`, JSON.stringify(news), "EX", 600);
+};
+
+const getCachedNews = async (newsId) => {
+  const cachedUser = await redis.get(`news:${newsId}`);
+  return cachedUser ? JSON.parse(cachedUser) : null;
+};
+
+const invalidateCache = async (newsId) => {
+  await redis.del(`news:${newsId}`);
+};
+
 async function create(news) {
-  const createdBlog = await NewsModel.create(news);
-  return createdBlog.toObject();
+  const createdNews = await NewsModel.create(news);
+  return createdNews.toObject();
 }
 
-async function update(blog) {
-  return NewsModel.findByIdAndUpdate(blog._id, blog, { new: true })
+async function update(news) {
+  return NewsModel.findByIdAndUpdate(news.id, news, { new: true })
     .lean()
     .exec();
 }
 
 async function findInfoById(id) {
-  return NewsModel.findOne({ _id: id, status: true })
+  const news = await getCachedNews(id);
+  if (news) return news;
+  const _id = new Types.ObjectId(id);
+  const fetchedNews = NewsModel.findOne({ _id })
     .populate("author", AUTHOR_DETAIL)
     .lean()
     .exec();
+  cacheNews(id, fetchedNews);
+  return fetchedNews;
 }
 
 async function findInfoForPublishedById(id) {
@@ -37,7 +57,7 @@ async function findNewsAllDataById(id) {
 }
 
 async function findDetailedNews(query) {
-  return BlogModel.find(query)
+  return NewsModel.find(query)
     .select("+isPublished, createdAt, updatedAt")
     .populate("author", AUTHOR_DETAIL)
     .sort({ updatedAt: -1 })
@@ -140,6 +160,7 @@ export default {
   update,
   findInfoById,
   findInfoForPublishedById,
+  findPublishedById,
   findNewsAllDataById,
   findByTagAndPaginated,
   findAllPublishedForAuthor,

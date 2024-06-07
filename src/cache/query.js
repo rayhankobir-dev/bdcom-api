@@ -1,5 +1,6 @@
 import cache from "./index.js";
 
+// these functions are created for extra benefit but didin't use for time constrain
 const TYPES = {
   LIST: "list",
   STRING: "string",
