@@ -6,7 +6,7 @@ dotenv.config();
 // server configuration
 export const port = process.env.PORT || 4007;
 export const host = process.env.HOST || "localhost";
-export const environment = process.env.ENVIRONEMTN_MODE || "development";
+export const environment = process.env.MODE || "development";
 
 // cors policy confiuration
 export const corsConfig = {
