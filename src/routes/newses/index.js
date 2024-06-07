@@ -67,7 +67,7 @@ router.use(auth);
 
 /**
  * @swagger
- * /api/v1/newses/latest:
+ * /api/v1/newses:
  *   post:
  *     tags:
  *       - News

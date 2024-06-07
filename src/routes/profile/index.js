@@ -4,6 +4,7 @@ import { SuccessResponse } from "../../core/ApiResponse.js";
 import authMiddleware from "../../middlewares/auth.middleware.js";
 import { BadRequestError } from "../../core/ApiError.js";
 import asyncHandler from "../../helpers/asyncHandler.js";
+import _ from "lodash";
 
 const router = new Router();
 
@@ -16,7 +17,7 @@ router.use(authMiddleware);
  * tags:
  *   name: Profile
  *   description: User profile related endpoints
- * /my:
+ * /api/v1/profile/my:
  *   get:
  *     summary: Get user profile
  *     description: Retrieve the profile information of the authenticated user

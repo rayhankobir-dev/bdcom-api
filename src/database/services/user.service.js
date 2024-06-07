@@ -24,18 +24,18 @@ async function exists(id) {
 
 async function findPrivateProfileById(id) {
   let user = await getCachedUser(id);
-  if (!user) {
-    user = await UserModel.findOne({ _id: id, status: true })
-      .select("+email")
-      .populate({
-        path: "roles",
-        match: { status: true },
-        select: { code: 1 },
-      })
-      .lean()
-      .exec();
-    if (user) await cacheUser(id, user);
-  }
+  if (user) return user;
+  const fetchedUser = await UserModel.findOne({ _id: id, status: true })
+    .select("+email")
+    .populate({
+      path: "roles",
+      match: { status: true },
+      select: { code: 1 },
+    })
+    .lean()
+    .exec();
+  if (fetchedUser) await cacheUser(id, fetchedUser);
+
   return user;
 }
 
